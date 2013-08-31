@@ -5,7 +5,7 @@ from cms.plugin_base import CMSPluginBase, CMSPluginBaseMetaclass
 from cms.plugin_pool import plugin_pool
 from cms.utils.compat.type_checks import string_types
 from menus.menu_pool import menu_pool
-from menus.base import Menu
+from menus.base import CMSAttachMenu
 
 from .utils import build_and_register
 from .menu import Node
@@ -55,18 +55,15 @@ def may_return_node(func):
             return output
     return inner
 
-def menu(*args, **options):
+def menu(name, **options):
     def decorator(func):
-        return build_and_register(Menu, func.__name__, menu_pool.register_menu,
+        return build_and_register(CMSAttachMenu, name, menu_pool.register_menu,
             attrs=options,
             methods={
                 'get_nodes': may_return_node(func)
             }
         )
-    if args and not options:
-        return decorator(args[0])
-    else:
-        return decorator
+    return decorator
 
 try:
     from cms.toolbar_pool import toolbar_pool

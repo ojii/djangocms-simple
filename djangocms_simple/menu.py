@@ -7,6 +7,7 @@ class Node(NavigationNode):
         if uid is None:
             Node._uid_counter += 1
             uid = Node._uid_counter
+        self._parent = parent
         super(Node, self).__init__(title, url, uid, parent.id if parent else None, None, attr, visible)
         self._children = []
 
@@ -14,6 +15,11 @@ class Node(NavigationNode):
         child = Node(title, url, uid, self, attr, visible)
         self._children.append(child)
         return child
+
+    def add_sibling(self, title, url, uid=None, attr=None, visible=True):
+        sibling = Node(title, url, uid, self._parent, attr, visible)
+        self._children.append(sibling)
+        return sibling 
 
     def _as_list(self):
         nodes = []
